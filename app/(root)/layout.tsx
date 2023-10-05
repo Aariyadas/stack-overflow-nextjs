@@ -1,4 +1,5 @@
-import LeftSidebar from '@/components/shared/navbar/LeftSidebar'
+
+import LeftSidebar from '@/components/shared/LeftSidebar'
 import Navbar from '@/components/shared/navbar/Navbar'
 import React from 'react'
 
