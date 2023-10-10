@@ -5,20 +5,20 @@ import RenderTag from "./RenderTag";
 
 const RightSidebar = () => {
   const topQuestions = [
-    { _id: 1, title: "What is differnce between backend and frontend" },
-    { _id: 2, title: "What is differnce React and NOte" },
-    { _id: 3, title: "What is redux" },
-    { _id: 4, title: "Explain Hooks" },
-    { _id: 5, title: "How to evaluate post and prefix" },
+    { _id: '1', title: "What is differnce between backend and frontend" },
+    { _id: '2', title: "What is differnce React and NOte" },
+    { _id: '3', title: "What is redux" },
+    { _id: '4', title: "Explain Hooks" },
+    { _id: '5', title: "How to evaluate post and prefix" },
   ];
 
   const popularTags=[
-    {_id:1 ,name:"javascript",totalQuestions:50},
-    {_id:2 ,name:"react",totalQuestions:15},
-    {_id:3 ,name:"redux",totalQuestions:25},
-    {_id:4 ,name:"nextjs",totalQuestions:5},
+    {_id:'1' ,name:"javascript",totalQuestions:50},
+    {_id:'2' ,name:"react",totalQuestions:15},
+    {_id:'3' ,name:"redux",totalQuestions:25},
+    {_id:'4' ,name:"nextjs",totalQuestions:5},
    
-  ]
+  ];
   return (
     <section className="background-light900_dark200 light-border  custom-scrollbar  overflow-y-auto sticky right-0 top-0 flex h-screen w-[350px] flex-col border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
