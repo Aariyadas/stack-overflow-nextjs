@@ -5,68 +5,19 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filter";
+import { getQuestion } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-const questions = [
-  {
-    _id: "1",
-    title: "What is Next Js",
-    tags: [
-      { _id: "1", name: "next" },
-      { _id: "2", name: "react" },
-    ],
-    author: {
-      _id: "1",
-      name: "Ariya Das",
-      picture: "url-to-picture",
-    },
-    upvotes: 100000,
-    views: 100,
-    answers: [],
-    createdAt: new Date("2023-09-08T00:00:00")
-  },
-  {
-    _id: "2",
-    title: "What is Next Js",
-    tags: [
-      { _id: "1", name: "next" },
-      { _id: "2", name: "react" },
-    ],
-    author: {
-      _id: "1",
-      name: "Ariya Das",
-      picture: "url-to-picture",
-    },
-    upvotes: 1000,
-    views: 10000,
-    answers: [],
-    createdAt: new Date("2023-09-08T00:00:00"), // Corrected the date format
-  },
-  {
-    _id: "3",
-    title: "What is Next Js",
-    tags: [
-      { _id: "1", name: "next" },
-      { _id: "2", name: "react" },
-    ],
-    author: {
-      _id: "1",
-      name: "Ariya Das",
-      picture: "url-to-picture",
-    },
-    upvotes: 10000000,
-    views: 120000,
-    answers: [],
-    createdAt: new Date("2023-03-12T00:00:00"), // Corrected the date format
-  },
-];
 
-export default function Home() {
+
+export default async function Home() {
+  const result =await getQuestion({});
+  console.log(result.questions);
   return (
     <>
       <div className="flex  w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
-        <Link className="flex justify-end max-sm:w-full" href="/ask-questions">
+        <Link className="flex justify-end max-sm:w-full" href="/ask-question">
           <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900">
             Ask a Questions
           </Button>
@@ -91,8 +42,8 @@ export default function Home() {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6 ">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -109,7 +60,7 @@ export default function Home() {
           <NoResult
             title="There is no question to show"
             description="Be the first to break the silence! Ask a Question and kickstart the discussion."
-            link="/ask-questions"
+            link="/ask-question"
             linkTitle="Ask a Question"
           />
         )}
