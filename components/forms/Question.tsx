@@ -33,7 +33,7 @@ const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIssubmitting] = useState(false);
   const router = useRouter();
-  const pathname=usePathname()
+  const pathname = usePathname();
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
@@ -57,10 +57,10 @@ const Question = ({ mongoUserId }: Props) => {
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
-      path:pathname,
+        path: pathname,
       });
 
-      router.push('/');
+      router.push("/");
     } catch (error) {
     } finally {
       setIssubmitting(false);
