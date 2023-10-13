@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
@@ -9,10 +9,8 @@ import { HomePageFilters } from "@/constants/filter";
 import { getQuestion } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-
-
 export default async function Home() {
-  const result =await getQuestion({});
+  const result = await getQuestion({});
   console.log(result.questions);
   return (
     <>
@@ -35,8 +33,8 @@ export default async function Home() {
         />
         <Filter
           filters={HomePageFilters}
-          otherClasses="min-h-[56px] sm:min-w[170px]"
-          containerClasses="hidden max-md:flex"
+          otherClasses="min-h-[56px] sm:min-w-[170px] "
+          containerClasses=" md:hidden max:md-flex"
         />
       </div>
 
