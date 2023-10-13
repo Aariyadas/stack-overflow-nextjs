@@ -26,12 +26,13 @@ export const AnswerFilters = [
     { name: "Old", value: "old" },
   ];
   
-  export const HomePageFilters = [
+  export const HomePageFilters: { name: string; value: string }[] = [
     { name: "Newest", value: "newest" },
     { name: "Recommended", value: "recommended" },
     { name: "Frequent", value: "frequent" },
     { name: "Unanswered", value: "unanswered" },
   ];
+  
   
   export const GlobalSearchFilters = [
     { name: "Question", value: "question" },
