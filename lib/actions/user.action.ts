@@ -66,7 +66,7 @@ export async function deleteUser(params: DeleteUserParams) {
     const userQuestionsIds = await Question.find({ author: user._id }).distinct(
       "_id"
     );
-    console.log(userQuestionsIds);
+    console.log(userQuestionsIds,"userQuestionId");
 
     await Question.deleteMany({ author: user._id });
 
@@ -82,17 +82,17 @@ export async function deleteUser(params: DeleteUserParams) {
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    console.log("Connecting to the database...");
+   
     connectToDatabase();
-    console.log("Connected to the database.");
+    
 
     const users = await User.find({}).sort({ createdAt: -1 });
     
-    console.log("Fetched users:", users);
+   
 
     return {users};
   } catch (error) {
-    console.log("Aiya")
+    
     console.error("An error occurred while fetching users:", error);
     throw error;
   }
