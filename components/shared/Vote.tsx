@@ -26,7 +26,7 @@ const Vote = ({
  const handleVote =(action:string)=>{
 
  }
- const handleVote=()=>{
+ const handleSave=()=>{
 
  }
 
