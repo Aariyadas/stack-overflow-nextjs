@@ -5,7 +5,7 @@ import Metric from "@/components/shared/Metric";
 import ParsedHTML from "@/components/shared/ParsedHTML";
 
 import RenderTag from "@/components/shared/RenderTag";
-import Vote from "@/components/shared/Vote";
+import Votes from "@/components/shared/Votes";
 
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
@@ -32,7 +32,11 @@ const Page = async ({ params }) => {
       <div className="flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
           <Link
-            href={`/profile/${result.author.clerkId}`}
+            href={
+              result && result.author
+                ? `/profile/${result.author.clerkId}`
+                : "/profile"
+            } // Check if result and result.author exist
             className="flex items-center justify-start gap-1"
           >
             <Image
@@ -47,8 +51,8 @@ const Page = async ({ params }) => {
             </p>
           </Link>
           <div className="flex justify-end">
-            <Vote
-              type="question"
+            <Votes
+              type="Question"
               itemId={JSON.stringify(result._id)}
               userId={JSON.stringify(mongoUser._id)}
               upvotes={result.upvotes.length}
@@ -103,7 +107,7 @@ const Page = async ({ params }) => {
 
       <AllAnswer
         questionId={result._id}
-        userId={JSON.stringify(mongoUser._id)}
+        userId={mongoUser._id}
         totalAnswers={result.answers.length}
       />
 

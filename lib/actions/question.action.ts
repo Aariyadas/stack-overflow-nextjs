@@ -94,12 +94,13 @@ export async function upvoteQuestion(params:QuestionVoteParams){
     }else{
       updateQuery ={$addToSet :{upvotes:userId}}
     }
+    // Database Update
     const question =await Question.findByIdAndUpdate(questionId,updateQuery,{new:true})
     if(!question){
       throw new Error ("Question not found")
     }
     // Increment author badge by 10 points
-
+       revalidatePath(path)
   }catch(error){
     console.log(error)
     throw error
@@ -128,7 +129,7 @@ export async function downvoteQuestion(params:QuestionVoteParams){
       throw new Error ("Question not found")
     }
     // Increment author badge by 10 points
-
+      revalidatePath(path)
   }catch(error){
     console.log(error)
     throw error

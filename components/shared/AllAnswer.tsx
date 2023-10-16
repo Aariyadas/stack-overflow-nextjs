@@ -1,13 +1,13 @@
-import React from 'react'
-import Filter from './Filter';
+import React from "react";
+import Filter from "./Filter";
 
-import { getAnswers } from '@/lib/actions/answer.action';
-import Link from 'next/link';
-import Image from 'next/image';
-import { AnswerFilters } from '@/constants/filter';
-import { getTimeStamp } from '@/lib/utils';
-import ParsedHTML from './ParsedHTML';
-
+import { getAnswers } from "@/lib/actions/answer.action";
+import Link from "next/link";
+import Image from "next/image";
+import { AnswerFilters } from "@/constants/filter";
+import { getTimeStamp } from "@/lib/utils";
+import ParsedHTML from "./ParsedHTML";
+import Votes from "./Votes";
 
 
 interface Props {
@@ -18,25 +18,34 @@ interface Props {
   filter?: number;
 }
 
-const AllAnswers = async ({ questionId, userId, totalAnswers, page, filter }: Props) => {
+const AllAnswers = async ({
+  questionId,
+  userId,
+  totalAnswers,
+  page,
+  filter,
+}: Props) => {
   const result = await getAnswers({
     questionId,
-  })
+  });
 
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between">
         <h3 className="primary-text-gradient">{totalAnswers} Answers</h3>
 
-        <Filter filters={AnswerFilters}/>
+        <Filter filters={AnswerFilters} />
       </div>
 
       <div>
         {result.answers.map((answer) => (
-          <article key={answer._id} className='light-border border-b py-10'>
+          <article key={answer._id} className="light-border border-b py-10">
             <div className="flex items-center justify-between">
               <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
-                <Link href={`/profile/${answer.author.clerkId}`} className="flex flex-1 items-start gap-1 sm:items-center">
+                <Link
+                  href={`/profile/${answer.author.clerkId}`}
+                  className="flex flex-1 items-start gap-1 sm:items-center"
+                >
                   <Image
                     src={answer.author.picture}
                     width={18}
@@ -50,23 +59,30 @@ const AllAnswers = async ({ questionId, userId, totalAnswers, page, filter }: Pr
                     </p>
 
                     <p className="small-regular text-light400_light500  mt-0.5 line-clamp-1">
-                      answered {" "}
-                      {getTimeStamp(answer.createdAt)}
-                      </p>
+                      answered {getTimeStamp(answer.createdAt)}
+                    </p>
                   </div>
                 </Link>
                 <div className="flex justify-end">
-                  VOTING
+                  <Votes
+                    type="Answer"
+                    itemId={JSON.stringify(answer._id)}
+                    userId={JSON.stringify(userId)}
+                    upvotes={answer.upvotes.length}
+                    hasupVoted={answer.upvotes.includes(userId)}
+                    downvotes={answer.downvotes.length}
+                    hasdownVoted={answer.downvotes.includes(userId)}
+                   
+                  />
                 </div>
               </div>
-
             </div>
-              <ParsedHTML data={answer.content} />
+            <ParsedHTML data={answer.content} />
           </article>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AllAnswers
+export default AllAnswers;
