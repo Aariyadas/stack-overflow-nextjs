@@ -10,7 +10,8 @@ import { formatNumberWithExtension } from "@/lib/utils";
 import Image from "next/image";
 
 import React from "react";
-import { upvoteAnswer } from "@/lib/actions/answer.action";
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import { savedQuestion } from "@/lib/actions/user.action";
 interface Props {
   type: string;
   itemId: string;
@@ -76,19 +77,25 @@ const Votes = ({
           path: pathname,
         });
       } else if (type === "Answer") {
-        // await downvoteAnswer({
-        //   questionId: JSON.parse(itemId),
-        //   userId: JSON.parse(userId),
-        //   hasupVoted,
-        //   hasdownVoted,
-        //   path: pathname,
-        // });
+        await downvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        });
       }
       //  todo Show Toast
       return;
     }
   }
-    const handleSave = () => {};
+    const handleSave = async () => {
+      await savedQuestion({
+        userId:JSON.parse(userId),
+        questionId:JSON.parse(itemId),
+        path:pathname
+      })
+    };
 
     return (
       <div className="flex gap-5">
@@ -136,7 +143,7 @@ const Votes = ({
           <Image
             src={
               hasSaved
-                ? "/assets/icons/star-filled"
+                ? "/assets/icons/star-filled.svg"
                 : "/assets/icons/star-red.svg"
             }
             width={18}

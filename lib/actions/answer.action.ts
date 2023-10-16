@@ -93,8 +93,8 @@ export async function downvoteAnswer(params:AnswerVoteParams){
     }else{
       updateQuery ={$addToSet :{downvotes:userId}}
     }
-    const question =await Answer.findByIdAndUpdate(answerId,updateQuery,{new:true})
-    if(!question){
+    const answer =await Answer.findByIdAndUpdate(answerId,updateQuery,{new:true})
+    if(!answer){
       throw new Error ("Answer not found")
     }
     // Increment author badge by 10 points
