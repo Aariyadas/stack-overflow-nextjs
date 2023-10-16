@@ -9,9 +9,10 @@ import {
 import { formatNumberWithExtension } from "@/lib/utils";
 import Image from "next/image";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { saveQuestion } from "@/lib/actions/user.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
 interface Props {
   type: string;
   itemId: string;
@@ -94,6 +95,14 @@ const Votes = ({
       path: pathname,
     });
   };
+
+  useEffect (()=>{
+  viewQuestion ({
+    questionId:JSON.parse(itemId),
+    userId:userId? JSON.parse(userId):undefined,
+  })
+    // alert('viewed')
+  },[itemId,userId,pathname,router])
 
   return (
     <div className="flex gap-5">
