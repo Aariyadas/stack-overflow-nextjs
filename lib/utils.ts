@@ -45,3 +45,14 @@ export const  formatNumberWithExtension=(number: number): string =>{
   }
 }
 
+
+
+ export const formatMonthAndYear=(date: Date): string =>{
+  const month = date.toLocaleString('en-US', { month: 'short' });
+  const year = date.getFullYear();
+  return `${month} ${year}`;
+}
+
+
+
+
