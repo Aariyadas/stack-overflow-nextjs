@@ -10,6 +10,7 @@ import {
   ToggleSaveQuestionParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
@@ -177,6 +178,23 @@ export async function getUserInfo(params: GetUserByIdParams) {
       totalQuestions,
       totalAnswers,
     };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+    const totalQuestion = await Question.countDocuments({ author: userId })
+    const userQuestion=await Question.find({author:userId})
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id clerkId name picture");
+
+    return { totalQuestion ,questions:userQuestion};
   } catch (error) {
     console.log(error);
     throw error;
