@@ -39,7 +39,7 @@ export async function createQuestion(params: CreateQuestionParams) {
         //  1 argument searching for document
         { name: { $regex: new RegExp(`^${tag}$`, "i") } },
         // If it found it updates and push id  of question  into Question array field
-        { $setOnInsert: { name: tag }, push: { question: question._id } },
+        { $setOnInsert: { name: tag }, push: { questions: question._id } },
         // if no document found matching it insert new document with name set value to tag
         { upsert: true, new: true }
       );
@@ -63,7 +63,7 @@ export async function getQuestionById(params:GetQuestionByIdParams){
 try{
   connectToDatabase()
   const{questionId}=params;
-
+   console.log({questionId})
   const question =await Question.findById(questionId)
   .populate({path:'tags' ,model:Tag,select:"_id name"})
   .populate({path:'author' ,model:User,select:"_id clerkId name picture"})

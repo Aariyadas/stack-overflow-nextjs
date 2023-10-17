@@ -1,5 +1,5 @@
 import React from "react";
-import QuestionCard from "@/components/cards/QuestionCard";
+
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filter";
 import { getQuestion } from "@/lib/actions/question.action";
 import Link from "next/link";
+import QuestionCard from "@/components/cards/QuestionCard";
 
 export default async function Home() {
   const result = await getQuestion({});
-  
+
   return (
     <>
       <div className="flex  w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
