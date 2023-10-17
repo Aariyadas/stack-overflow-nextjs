@@ -1,0 +1,67 @@
+import { formatNumberWithExtension } from "@/lib/utils";
+import Image from "next/image";
+import React from "react";
+
+interface StatsCardProps {
+  imageUrl: string;
+  value: number;
+  title: string;
+}
+
+const StatsCard = ({ imageUrl, value, title }: StatsCardProps) => {
+  return (
+    <div className="light-border background-light900_dark300 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-6 shadow-light-300 dark:shadow-dark-200">
+      <Image src={imageUrl} alt={title} width={40} height={50} />
+
+      <div>
+        <p className="paragraph-semibold text-dark200_light900">{value}</p>
+        <p className="body-medium text-dark400_light700">Questions</p>
+      </div>
+    </div>
+  );
+};
+
+interface Props {
+  totalQuestions: number;
+  totalAnswers: number;
+}
+
+const Stats = ({ totalQuestions, totalAnswers }: Props) => {
+  return (
+    <div className="mt-10">
+      <h4 className="h3-semibold text-dark200_light900"></h4>
+
+      <div className="md:grid-col-4 mt-5 grid grid-col-1 gap-5 xs:grid-col-2">
+        <div className="light-border background-light900_dark300 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-6 shadow-light-300 dark:shadow-dark-200">
+          <p className="paragraph-semibold text-dark200_light900">
+            {formatNumberWithExtension(totalQuestions)}
+          </p>
+          <p className="body-medium text-dark400_light700">Questions</p>
+        </div>
+        <div className="light-border background-light900_dark300 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-6 shadow-light-300 dark:shadow-dark-200">
+          <p className="paragraph-semibold text-dark200_light900">
+            {formatNumberWithExtension(totalAnswers)}
+          </p>
+          <p className="body-medium text-dark400_light700">Answers</p>
+        </div>
+      </div>
+      <StatsCard
+        imageUrl="/assets/icons/gold-medal.svg"
+        value={0}
+        title="Gold Badges"
+      />
+      <StatsCard
+        imageUrl="/assets/icons/silver-medal.svg"
+        value={0}
+        title="Silver Badges"
+      />
+      <StatsCard
+        imageUrl="/assets/icons/bronze-medal.svg"
+        value={0}
+        title="Bronze Badges"
+      />
+    </div>
+  );
+};
+
+export default Stats;
