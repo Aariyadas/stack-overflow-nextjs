@@ -11,11 +11,14 @@ import {
   GetSavedQuestionsParams,
   GetUserByIdParams,
   GetUserStatsParams,
+  DeleteQuestionParams,
+  DeleteAnswerParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getUserById(params: any) {
   try {
@@ -188,37 +191,77 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     connectToDatabase();
     const { userId } = params;
-    const totalQuestion = await Question.countDocuments({ author: userId })
-    const userQuestion=await Question.find({author:userId})
+    const totalQuestion = await Question.countDocuments({ author: userId });
+    const userQuestion = await Question.find({ author: userId })
       .sort({ views: -1, upvotes: -1 })
       .populate("tags", "_id name")
       .populate("author", "_id clerkId name picture");
 
-    return { totalQuestion ,questions:userQuestion};
+    return { totalQuestion, questions: userQuestion };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
-
 export async function getUserAnswer(params: GetUserStatsParams) {
   try {
-    connectToDatabase()
+    connectToDatabase();
     const { userId } = params;
-    const totalAnswers = await Answer.countDocuments({ author: userId })
-    const userAnswers=await Answer.find({author:userId})
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+    const userAnswers = await Answer.find({ author: userId })
       .sort({ views: -1, upvotes: -1 })
       .populate("question", "_id title")
       .populate("author", "_id clerkId name picture");
 
-    return { totalAnswers ,answers:userAnswers};
+    return { totalAnswers, answers: userAnswers };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+    await Question.deleteOne({ _id: questionId });
+    // Need to delete answer assosiated answers and interactions
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { question: questionId },
+      { $pull: { questions: questionId } }
+    );
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  try {
+    connectToDatabase();
+
+    const { answerId, path } = params;
+    const answer = await Answer.findById(answerId);
+    if (!answer) {
+      throw new Error("Answer not Found");
+    }
+    await answer.deleteOne({ _id: answerId });
+    await Question.updateMany(
+      { _id: answer.question },
+      { pull: { answers: answerId } }
+    );
+    await Interaction.deleteMany({answer:answerId})
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 // export async function GetAllUsers(params:GetAllUsersParams){
 //   try{

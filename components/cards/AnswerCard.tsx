@@ -4,6 +4,7 @@ import Link from "next/link";
 import Metric from "../shared/Metric";
 import { formatNumberWithExtension, getTimeStamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
+import EditDeleteActions from "../shared/EditDeleteActions";
 
 
 interface Props {
@@ -32,7 +33,7 @@ const AnswerCard = ({
   createdAt,
 }: Props) => {
   
-
+  const showActionButton = clerkId && clerkId===author.clerkId;
   return (
     <Link
       href={`/question/${question?._id}/#${_id}`}
@@ -47,7 +48,12 @@ const AnswerCard = ({
             {question.title}
           </h3>
         </div>
+        <SignedIn>
+       {showActionButton &&(
+        <EditDeleteActions type="Answer" itemId={JSON.stringify(_id)} />
+       )}
 
+      </SignedIn>
         
       </div>
 
