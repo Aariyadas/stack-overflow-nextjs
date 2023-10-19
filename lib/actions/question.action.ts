@@ -3,9 +3,11 @@
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose";
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared.types";
+import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getQuestion(params: GetQuestionsParams) {
   try {
@@ -39,7 +41,7 @@ export async function createQuestion(params: CreateQuestionParams) {
         //  1 argument searching for document
         { name: { $regex: new RegExp(`^${tag}$`, "i") } },
         // If it found it updates and push id  of question  into Question array field
-        { $setOnInsert: { name: tag }, push: { questions: question._id } },
+        { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         // if no document found matching it insert new document with name set value to tag
         { upsert: true, new: true }
       );
@@ -52,7 +54,7 @@ export async function createQuestion(params: CreateQuestionParams) {
       // for each tag document we push the Id of that tag and that's going to be added to  the question
       $push: { tags: { $each: tagDocument } },
     });
-
+   
     //  Create an interaction record for user's ask_question action
     // Increment author's reputation by +5 points
     revalidatePath(path);
@@ -63,6 +65,7 @@ export async function getQuestionById(params:GetQuestionByIdParams){
 try{
   connectToDatabase()
   const{questionId}=params;
+  console.log(questionId)
    
   const question =await Question.findById(questionId)
   .populate({path:'tags' ,model:Tag,select:"_id name"})
@@ -137,6 +140,48 @@ export async function downvoteQuestion(params:QuestionVoteParams){
   }
 }
 
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+    await Question.deleteOne({ _id: questionId });
+    // Need to delete answer assosiated answers and interactions
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { question: questionId },
+      { $pull: { questions: questionId } }
+    );
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+    const {questionId,title,content ,path} =params;
+    const question =await Question.findById(questionId).populate('tags')
+
+    if(!question){
+      throw new Error("Question Not found")
+    }
+
+    question.title =title;
+    question.content=content;
+
+    await question.save();
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 
 

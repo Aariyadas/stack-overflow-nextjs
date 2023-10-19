@@ -1,7 +1,8 @@
 "use server";
-import { FilterQuery } from "mongoose";
+
 import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
+import { FilterQuery } from "mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
@@ -11,14 +12,13 @@ import {
   GetSavedQuestionsParams,
   GetUserByIdParams,
   GetUserStatsParams,
-  DeleteQuestionParams,
-  DeleteAnswerParams,
+  
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
-import Interaction from "@/database/interaction.model";
+
 
 export async function getUserById(params: any) {
   try {
@@ -138,9 +138,10 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
     const { clerkId, searchQuery } = params;
-    const query = (FilterQuery<typeof Question> = searchQuery
+    const query = FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
-      : {});
+      : {};
+    
     const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,
@@ -152,10 +153,12 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         { path: "author", model: User, select: "_id clerkId name picure" },
       ],
     });
+    console.log(user)
     if (!user) {
       throw new Error("User not found");
     }
     const savedQuestions = user.saved;
+    console.log(savedQuestions)
     return { questions: savedQuestions };
   } catch (error) {
     console.log(error);
@@ -221,47 +224,8 @@ export async function getUserAnswer(params: GetUserStatsParams) {
   }
 }
 
-export async function deleteQuestion(params: DeleteQuestionParams) {
-  try {
-    connectToDatabase();
 
-    const { questionId, path } = params;
-    await Question.deleteOne({ _id: questionId });
-    // Need to delete answer assosiated answers and interactions
-    await Answer.deleteMany({ question: questionId });
-    await Interaction.deleteMany({ question: questionId });
-    await Tag.updateMany(
-      { question: questionId },
-      { $pull: { questions: questionId } }
-    );
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
 
-export async function deleteAnswer(params: DeleteAnswerParams) {
-  try {
-    connectToDatabase();
-
-    const { answerId, path } = params;
-    const answer = await Answer.findById(answerId);
-    if (!answer) {
-      throw new Error("Answer not Found");
-    }
-    await answer.deleteOne({ _id: answerId });
-    await Question.updateMany(
-      { _id: answer.question },
-      { pull: { answers: answerId } }
-    );
-    await Interaction.deleteMany({answer:answerId})
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
 
 // export async function GetAllUsers(params:GetAllUsersParams){
 //   try{
