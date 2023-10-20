@@ -40,7 +40,7 @@ const Question = ({ mongoUserId ,type,questionDetails}: Props) => {
   const pathname = usePathname();
 // repopulating details for edit
 const parsedQuestionDetail=JSON.parse(questionDetails || '' )
-
+console.log(parsedQuestionDetail)
 const groupTag=parsedQuestionDetail.tags.map((tag)=>tag.name)
 
 
