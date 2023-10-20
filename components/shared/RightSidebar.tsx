@@ -3,22 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 
 import RenderTag from "./RenderTag";
+import { getTopQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.action";
 
-const RightSidebar = () => {
-  const topQuestions = [
-    { _id: "1", title: "What is differnce between backend and frontend" },
-    { _id: "2", title: "What is differnce React and NOte" },
-    { _id: "3", title: "What is redux" },
-    { _id: "4", title: "Explain Hooks" },
-    { _id: "5", title: "How to evaluate post and prefix" },
-  ];
 
-  const popularTags = [
-    { _id: "1", name: "javascript", totalQuestions: 50 },
-    { _id: "2", name: "react", totalQuestions: 15 },
-    { _id: "3", name: "redux", totalQuestions: 25 },
-    { _id: "4", name: "nextjs", totalQuestions: 5 },
-  ];
+
+
+const RightSidebar =  async () => {
+
+  const topQuestions = await getTopQuestions();
+  const popularTags=await getPopularTags()
+  console.log(popularTags)
+
   return (
     <section className="background-light900_dark200 light-border  custom-scrollbar  overflow-y-auto sticky right-0 top-0 flex h-screen w-[350px] flex-col border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
@@ -26,7 +22,7 @@ const RightSidebar = () => {
         <div className="mt-7 flex w-full flex-col gap-[30px]">
           {topQuestions.map((questions) => (
             <Link
-              href={`/questions/${questions._id}`}
+              href={`/question${questions._id}`}
               key={questions._id}
               className="flex cursor-pointer items-center justify-between gap-7"
             >
@@ -52,7 +48,7 @@ const RightSidebar = () => {
               key={tag._id}
               _id={tag._id}
               name={tag.name}
-              totalQuestions={tag.totalQuestions}
+              totalQuestions={tag.numberOfQuestions}
               showCount
             />
           ))}
