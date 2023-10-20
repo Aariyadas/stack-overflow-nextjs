@@ -39,9 +39,9 @@ const Question = ({ mongoUserId ,type,questionDetails}: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 // repopulating details for edit
-const parsedQuestionDetail=JSON.parse(questionDetails || '' )
-console.log(parsedQuestionDetail)
-const groupTag=parsedQuestionDetail.tags.map((tag)=>tag.name)
+const parsedQuestionDetail= questionDetails && JSON.parse(questionDetails || '' )
+
+const groupTag=parsedQuestionDetail?.tags.map((tag)=>tag.name)
 
 
   
@@ -49,8 +49,8 @@ const groupTag=parsedQuestionDetail.tags.map((tag)=>tag.name)
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: parsedQuestionDetail.title ||'',
-      explanation: parsedQuestionDetail.content||'',
+      title: parsedQuestionDetail?.title ||'',
+      explanation: parsedQuestionDetail?.content||'',
       tags:groupTag || [],
     },
   });
@@ -168,7 +168,7 @@ const groupTag=parsedQuestionDetail.tags.map((tag)=>tag.name)
                   // Keep track what we enter
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue={parsedQuestionDetail.content || ''}
+                  initialValue={parsedQuestionDetail?.content || ''}
                   init={{
                     height: 500,
                     menubar: false,
