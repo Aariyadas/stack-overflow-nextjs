@@ -9,9 +9,14 @@ import { HomePageFilters } from "@/constants/filter";
 import { getQuestion } from "@/lib/actions/question.action";
 import Link from "next/link";
 import QuestionCard from "@/components/cards/QuestionCard";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
-  const result = await getQuestion({});
+export default async function Home({searchParams}:SearchParamsProps) {
+  const result = await getQuestion({
+    searchQuery:searchParams.q
+  });
+
+  
 
   return (
     <>

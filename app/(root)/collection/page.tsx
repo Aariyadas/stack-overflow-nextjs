@@ -10,11 +10,12 @@ import { QuestionFilters } from "@/constants/filter";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
 
-export default async function Page() {
+export default async function Page({searchParams}:SearchParamsProps) {
 
     const {userId} =auth();
   const result = await getSavedQuestions({
     clerkId:userId,
+    searchQuery:searchParams.q,
 
   });
 
