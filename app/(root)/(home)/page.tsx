@@ -13,7 +13,8 @@ import { SearchParamsProps } from "@/types";
 
 export default async function Home({searchParams}:SearchParamsProps) {
   const result = await getQuestion({
-    searchQuery:searchParams.q
+    searchQuery:searchParams.q,
+    filter:searchParams.filter,
   });
 
   
