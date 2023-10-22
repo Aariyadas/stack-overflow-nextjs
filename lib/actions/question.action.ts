@@ -35,17 +35,17 @@ export async function getQuestion(params: GetQuestionsParams) {
     let sortQuestions = {};
 
     switch (filter) {
-      case "newest":
+      case "most_recent":
         sortQuestions = { createdAt: -1 };
         break;
-      case "frequent":
+      case "oldest":
         sortQuestions = { views: -1 };
         break;
       case "unanswered":
         query.answers = { $size: 0 };
         break;
-      default:
-        break;
+        default:
+          break;
     }
 
     const questions = await Question.find(query)

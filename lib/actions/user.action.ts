@@ -92,10 +92,10 @@ export async function deleteUser(params: DeleteUserParams) {
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
-    const {searchQuery}=params;
+    const {searchQuery,filter}=params;
     const query =FilterQuery<typeof User> ={}
 
-
+   
 
     if(searchQuery) {
       query.$or =[
@@ -104,7 +104,20 @@ export async function getAllUsers(params: GetAllUsersParams) {
       ]
     }
 
-    const users = await User.find(query).sort({ createdAt: -1 });
+
+    let sortUser ={} 
+
+    switch(filter){
+      case "new_users": sortUser={joinedAt:-1}
+        break;
+      case "old_users":sortUser={joinedAt:1}
+        break;
+      case "top_contributors":sortUser={reputation:-1}
+       break;
+    }
+    console.log(sortUser)
+
+    const users = await User.find(query).sort(sortUser);
 
     return { users };
   } catch (error) {
@@ -148,12 +161,34 @@ export async function saveQuestion(params: ToggleSaveQuestionParams) {
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
-    const { clerkId, searchQuery } = params;
+    const { clerkId, searchQuery ,filter} = params;
 
     const query :FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
-    
+
+      let savedQuestion = {};
+
+      switch (filter) {
+        case "most_recent":
+          savedQuestion = { createdAt: -1 };
+          break;
+        case "oldest":
+          savedQuestion = { createdAt: 1 };
+          break;
+          case "most_viewed":
+          savedQuestion = { views: -1 };
+          break;
+          case "most_answered":
+          savedQuestion = { answers: -1 };
+          break;
+        case "most_voted":
+          savedQuestion = { upvotes:-1};
+          break;
+        default:
+          break;
+      }
+  
     const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,

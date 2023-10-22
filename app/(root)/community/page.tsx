@@ -10,7 +10,8 @@ import { SearchParamsProps } from "@/types";
 
 const Page = async ({searchParams}:SearchParamsProps) => {
   const result = await getAllUsers({
-    searchQuery:searchParams.q
+    searchQuery:searchParams.q,
+    filter:searchParams.filter,
 
   });
 
@@ -32,7 +33,7 @@ const Page = async ({searchParams}:SearchParamsProps) => {
         <Filter
           filters={UserFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px] "
-          containerClasses="md:hidden max:md-flex"
+        
         />
       </div>
       <section className="mt-2 flex flex-wrap gap-4">
