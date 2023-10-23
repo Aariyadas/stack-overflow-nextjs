@@ -182,8 +182,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
           case "most_answered":
           savedQuestion = { answers: -1 };
           break;
-        case "most_voted":
-          savedQuestion = { upvotes:-1};
+         case "most_voted":
+          savedQuestion = { upvotes:-1}
           break;
         default:
           break;
@@ -193,14 +193,14 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       path: "saved",
       match: query,
       options: {
-        sort: { createdAt: -1 },
+        sort: (savedQuestion),
       },
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picure" },
       ],
     });
-    console.log(user)
+   
     if (!user) {
       throw new Error("User not found");
     }
