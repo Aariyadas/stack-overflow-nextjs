@@ -20,7 +20,11 @@ import { FilterQuery } from "mongoose";
 export async function getQuestion(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
+
+    // Calculate the no of question card to skip based on page
+
+    const skipQuestions = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -44,15 +48,25 @@ export async function getQuestion(params: GetQuestionsParams) {
       case "unanswered":
         query.answers = { $size: 0 };
         break;
-        default:
-          break;
+      default:
+        break;
     }
 
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .skip(skipQuestions)
+      .limit(pageSize)
       .sort(sortQuestions);
-    return { questions };
+
+
+
+      // calculate total questions
+      const totalQuestions=await Question.countDocuments(query)
+      const isNext=totalQuestions >skipQuestions +questions.length
+
+
+    return { questions,isNext };
   } catch (error) {
     console.log(error);
     throw error;
