@@ -8,6 +8,7 @@ import { AnswerFilters } from "@/constants/filter";
 import { getTimeStamp } from "@/lib/utils";
 import ParsedHTML from "./ParsedHTML";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 
 interface Props {
@@ -27,7 +28,7 @@ const AllAnswers = async ({
 }: Props) => {
   const result = await getAnswers({
     questionId,
-    page:page? +page:1,
+    page: page ? +page : 1,
     sortBy:filter,
   });
 
@@ -82,6 +83,12 @@ const AllAnswers = async ({
             <ParsedHTML data={answer.content} />
           </article>
         ))}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={page ? +page : 1}
+          isNext={result.isNextAnswer}
+        />
       </div>
     </div>
   );
