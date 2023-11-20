@@ -11,6 +11,7 @@ import Link from "next/link";
 import QuestionCard from "@/components/cards/QuestionCard";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import GlobalSearch from "@/components/shared/search/GlobalSearch";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestion({
@@ -29,6 +30,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           </Button>
         </Link>
       </div>
+  
 
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
