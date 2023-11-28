@@ -17,6 +17,7 @@ import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import { FilterQuery } from "mongoose";
 
+
 export async function getQuestion(params: GetQuestionsParams) {
   try {
     connectToDatabase();
@@ -39,10 +40,10 @@ export async function getQuestion(params: GetQuestionsParams) {
     let sortQuestions = {};
 
     switch (filter) {
-      case "most_recent":
+      case "newest":
         sortQuestions = { createdAt: -1 };
         break;
-      case "oldest":
+      case "frequent":
         sortQuestions = { views: -1 };
         break;
       case "unanswered":
@@ -106,10 +107,23 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     //  Create an interaction record for user's ask_question action
-    
+    await Interaction.create({
+      user:author,
+      action:'ask_question',
+      question:question._id,
+      tags:tagDocument,
+
+    })
+
+    await User.findByIdAndUpdate(author,{$inc:{reputation:5}})
+    revalidatePath(path)
+   
     // Increment author's reputation by +5 points
-    revalidatePath(path);
-  } catch (error) {}
+
+ 
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
@@ -152,10 +166,23 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
       new: true,
     });
+
     if (!question) {
       throw new Error("Question not found");
     }
-    // Increment author badge by 10 points
+    // Increment author reputation +1/-1 for upvoting
+    await User.findByIdAndUpdate(userId,{
+      $inc:{reputation:hasupVoted ? -1: 1}
+    })
+
+// Increase author reputation bt +10/-10 for receiving and upvote or downvote question
+    await User.findByIdAndUpdate(question.author,{
+      $inc:{reputation:hasupVoted ? -10 : 10}
+    })
+
+
+
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -186,6 +213,16 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found");
     }
     // Increment author badge by 10 points
+
+    await User.findByIdAndUpdate(userId,{
+      $inc:{reputation:hasdownVoted ? -1: 1}
+    })
+
+
+    await User.findByIdAndUpdate(answer.author,{
+      $inc:{reputation:hasdownVoted ?-10 : 10}
+    })
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
