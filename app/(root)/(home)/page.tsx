@@ -13,12 +13,15 @@ import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import GlobalSearch from "@/components/shared/search/GlobalSearch";
 
+
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestion({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page:searchParams.page?  +searchParams.page:1,
   });
+
+
 
   return (
     <>
